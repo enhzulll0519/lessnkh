@@ -6,7 +6,7 @@
     <title>Document</title>
 </head>
 <body>
-    <h2>Upload Image</h2> 
+    <h2>Image</h2> 
     <form method="post" enctype="multipart/form-data"> 
         {% csrf_token %} <input type="file" name="image" accept="image/*"> 
         <button type="submit">Extract Text</button> </form>
