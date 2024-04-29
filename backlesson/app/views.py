@@ -4,7 +4,24 @@ from django.http import JsonResponse, HttpResponse
 import json
 from backlesson.settings import *
 from django.views.decorators.csrf import csrf_exempt
+import pytesseract
+from PIL import Image
 
+
+def extract_text_from_image(request):
+    if request.method == 'POST' and request.FILES['image']:
+        # Get the uploaded image
+        uploaded_image = request.FILES['image']
+
+        # Open the image using Pillow
+        image = Image.open(uploaded_image)
+
+        # Use pytesseract to extract text from the image
+        extracted_text = pytesseract.image_to_string(image)
+
+        return JsonResponse({"extracted_text": extracted_text})
+
+    return render(request, "extract_text.html")
 
 def gettime(request):
     jsons = json.loads(request.body)

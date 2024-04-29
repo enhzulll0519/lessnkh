@@ -5,5 +5,6 @@ from app.views import *
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('users/', checkService),
-    path('check/', checkToken)
+    path('check/', checkToken),
+    path('extract-text/', extract_text_from_image, name='extract_text_from_image')
 ]
