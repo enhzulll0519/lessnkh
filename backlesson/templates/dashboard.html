@@ -1,0 +1,11 @@
+<h1>Successful</h1>
+<h2>Upload Image</h2>
+<form method="post" enctype="multipart/form-data">
+    {%csrf_token%}
+    <input type="file" name="image">
+    <button type="submit">Submit</button>
+</form>
+
+<textarea name="" id="" cols="30" rows="10">
+    {{data}}
+</textarea>

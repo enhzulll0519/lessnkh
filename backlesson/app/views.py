@@ -6,6 +6,8 @@ from backlesson.settings import *
 from django.views.decorators.csrf import csrf_exempt
 import pytesseract
 from PIL import Image
+from rest_framework.decorators import api_view
+
 
 
 def extract_text_from_image(request):
@@ -22,6 +24,21 @@ def extract_text_from_image(request):
         return JsonResponse({"extracted_text": extracted_text})
 
     return render(request, "extract_text.html")
+
+@api_view(['POST', 'GET'])
+def b64Text(request):
+    action = 'base64ToText'
+    jsons=json.loads(request.body)
+    action = jsons.get('base64', 'nokey')
+    b64 = jsons.get('base64', 'nokey')
+    image_data = base64.b64decode(b64)
+    image = Image.open(io.BytesIO(image_data))
+    extract_text = pytesseract.image_to_string(image)
+    data = [{"text": extracted_text}]
+    print(data)
+    resp = sendResponse(request, 200, data, action)
+    return HttpResponse(resp)
+
 
 def gettime(request):
     jsons = json.loads(request.body)
