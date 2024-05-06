@@ -29,7 +29,7 @@ def extract_text_from_image(request):
 def b64Text(request):
     action = 'base64ToText'
     jsons=json.loads(request.body)
-    action = jsons.get('base64', 'nokey')
+    action = jsons.get('base64ToText', 'nokey')
     b64 = jsons.get('base64', 'nokey')
     image_data = base64.b64decode(b64)
     image = Image.open(io.BytesIO(image_data))
