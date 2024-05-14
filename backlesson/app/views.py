@@ -7,6 +7,9 @@ from django.views.decorators.csrf import csrf_exempt
 import pytesseract
 from PIL import Image
 from rest_framework.decorators import api_view
+import base64
+import io
+
 
 
 
@@ -25,19 +28,57 @@ def extract_text_from_image(request):
 
     return render(request, "extract_text.html")
 
+
+
 @api_view(['POST', 'GET'])
 def b64Text(request):
     action = 'base64ToText'
-    jsons=json.loads(request.body)
-    action = jsons.get('base64ToText', 'nokey')
+    jsons = json.loads(request.body)
+    action = jsons.get('action', 'nokey')
     b64 = jsons.get('base64', 'nokey')
     image_data = base64.b64decode(b64)
     image = Image.open(io.BytesIO(image_data))
-    extract_text = pytesseract.image_to_string(image)
-    data = [{"text": extracted_text}]
+    extracted_text = pytesseract.image_to_string(image)
+    data = [{"text":extracted_text}]
     print(data)
-    resp = sendResponse(request, 200, data, action)
+    resp= sendResponse(request, 200, data, action)
     return HttpResponse(resp)
+# @api_view(['POST', 'GET'])
+# def b64Text(request):
+#     action = 'base64ToText'
+    
+#     if request.method == 'POST':
+#         try:
+#             jsons = json.loads(request.body)
+#             action = jsons.get('action', 'nokey')
+#             b64 = jsons.get('base64', 'nokey')
+            
+#             if b64 == 'nokey':
+#                 return HttpResponse(json.dumps({"error": "base64 key missing"}), content_type="application/json", status=400)
+
+#             try:
+#                 image_data = base64.b64decode(b64)
+#             except (base64.binascii.Error, ValueError) as decode_error:
+#                 return HttpResponse(json.dumps({"error": "Invalid base64 data"}), content_type="application/json", status=400)
+
+#             image = Image.open(io.BytesIO(image_data))
+#             extracted_text = pytesseract.image_to_string(image)
+#             data = [{"text": extracted_text}]
+#             print(data)
+            
+#             # Assuming sendResponse is a function you have defined elsewhere
+#             # If sendResponse returns a JSON string, you can directly return it
+#             resp = sendResponse(request, 200, data, action)
+#             return HttpResponse(resp, content_type="application/json")
+
+#         except json.JSONDecodeError:
+#             return HttpResponse(json.dumps({"error": "Invalid JSON format"}), content_type="application/json", status=400)
+#         except Exception as e:
+#             # Log the error
+#             print(f"Unhandled exception: {e}")
+#             return HttpResponse(json.dumps({"error": "Internal server error"}), content_type="application/json", status=500)
+    
+#     return HttpResponse(json.dumps({"error": "Invalid request method"}), content_type="application/json", status=405)
 
 
 def gettime(request):
